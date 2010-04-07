@@ -3,16 +3,25 @@ Created on Apr 7, 2010
 
 @author: emil
 '''
-from Database import Database 
+from Database import DatabaseManager
+from Database import SQLowException 
 
 class BaseTable(object):
     __cols__ = ['']
+    __database__ = None
 
-    def __validateConnection(self):
-        Database().hasConnection()
-        Database().hasCursor()
+    def validate(self):
+        if len(self.__cols__) == 0:
+            raise SQLowException('You cannot have a table with a colum count of 0')
+            
+    
+    def executeSql(self,sql,close=True):
+        """
+        Execute a given SQL
+        """
+        DatabaseManger().getConnection(self.__name__)
         
-    def executeSql(self,sql):
         
-        print sql
+    
+        
         

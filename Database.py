@@ -1,4 +1,6 @@
+import re
 from random import randint
+from databases import *
 
 '''
 Created on Apr 7, 2010
@@ -12,7 +14,22 @@ class SQLowException(Exception):
         return repr(self.value)
 
 
-
+class DatabaseConnectionFactory(object):
+    
+    
+    @staticmethod
+    def loadModule(schema,string):
+        if schema.lower() == "mysql":
+            return mysql.MySQL(string) 
+                
+    @staticmethod        
+    def DatabaseConnection(string):
+        schemaPattern = re.compile("^([^\:]+):\/\/(.*)$")
+        match = schemaPattern.search(string)
+        if match:
+            return DatabaseConnectionFactory.loadModule(match.group(1),match.group(2))
+            
+        
 class DatabaseManager:
     """ A python singleton """
     class __Databaseimpl:
@@ -28,7 +45,7 @@ class DatabaseManager:
             
             return name
         
-        def getConnection(self,name=None):
+        def _getConnectionString(self,name=None):
             if len(self.databases) is 0:
                 raise SQLowException('Please add a connection before trying to get a connection')
             
@@ -41,6 +58,10 @@ class DatabaseManager:
                 return self.database[name]
             
             raise SQLowException('This shouldnt happen')
+        
+        def getConnection(self,name=None):
+            sqlConnection = ""
+
                 
             
              
@@ -71,5 +92,7 @@ class DatabaseManager:
         return setattr(self.__instance, attr, value)
 
 
-
+if __name__ == '__main__':
+    apa = DatabaseConnectionFactory("mysql://ASDF:password@dev.miniclip.com/Database")
+        
         
