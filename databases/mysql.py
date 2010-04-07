@@ -3,8 +3,11 @@ Created on Apr 7, 2010
 
 @author: emil
 '''
+try:
+    import MySQLdb as db
+except:
+    pass
 
-import MySQLdb as db
 import re
 
 class MySQL(object):
@@ -17,7 +20,7 @@ class MySQL(object):
     password = None
     database = None
     
-    connectionStringPattern = re.compile("([^\:]+):([^@]+)@([^\/]+)\/(\w+)")
+    connectionStringPattern = re.compile("(\w+)(\:\w+)?@(\w+)(\:\d+)?\/(\w+)")
 
     def __init__(self,string):
         '''
@@ -25,17 +28,19 @@ class MySQL(object):
         '''
         match = self.connectionStringPattern.match(string)
         if match:
-            (self.username,self.password,hostname,self.database) = match.groups()
-            splits = hostname.split(":",1)
-            if len(splits) > 1:
-                (self.hostname,self.hostport) = splits
+            print match.groups()
+            (self.username,self.password,self.hostname,self.hostport,self.database) = match.groups()
+            
+            if self.password is not None:
+                self.password.lstrip(":")
+            
+            if self.hostport is not None:
+                self.hostport.lstrip(":")
             else:
-                self.hostname = hostname
-                 
-            if self.hostport is None:
                 self.hostport = 3306
+            
         else:
-            raise Exception(string," is not a valid mysql dsn. mysql://username:password@hostname[:port]/database")
+            raise Exception("mysql://%s is not a valid mysql dsn. mysql://username[:password]@hostname[:port]/database" % string)
         
     def connect(self):
         return db.connect (host = self.hostname,
