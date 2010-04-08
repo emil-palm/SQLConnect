@@ -4,6 +4,7 @@ Created on Apr 8, 2010
 @author: emil
 '''
 import unittest
+from random import randint
 from Database import DatabaseManager, SQLowException, DatabaseConnectionFactory
 
 class Test_DatabaseConnectionFactory(unittest.TestCase):
@@ -17,6 +18,9 @@ class Test_DatabaseConnectionFactory(unittest.TestCase):
         database = DatabaseConnectionFactory.DatabaseConnection("sqlite://:memory:")
         self.assertNotEqual(database,None)
     
+    def test_creatingFake(self):
+        """ Try creating a non working object by using a invalid schema """
+        self.assertRaises(SQLowException,DatabaseConnectionFactory.DatabaseConnection,("random://randomInvalidString"))
         
 
 class Test_DatabaseManager(unittest.TestCase):
@@ -60,7 +64,25 @@ class Test_DatabaseManager(unittest.TestCase):
         sqlite = self.databaseManager.getConnection()
         self.assertNotEqual(sqlite.connect(),None)
         
-
+    def test_getRandomKey(self):
+        """ Try getting a non added connection """
+        self.databaseManager.addConnection("sqlite://:memory:")
+        self.assertRaises(SQLowException,self.databaseManager.getConnection,("%i%i" % (randint(0,1000),randint(0,1000))))
+        
+    def test_getConnectionStringWithoutName(self):
+        """ Try adding and retreving a connection string without a name """
+        self.databaseManager.addConnection("sqlite://:memory:")
+        self.assertNotEqual(self.databaseManager._getConnectionString(),None)
+        
+    def test_getConnectionStringWithName(self):
+        """ Try adding and retreving a connection string with a name """
+        self.databaseManager.addConnection("sqlite://:memory:","sqlite")
+        self.assertNotEqual(self.databaseManager._getConnectionString("sqlite"),None)
+        
+    def test_getConnectionStringWithoutAdding(self):
+        """ Try retreving a connectionString without adding one prior """
+        self.assertRaises(SQLowException,self.databaseManager._getConnectionString)
+                          
 if __name__ == "__main__":
     import sys;sys.argv = ['', '-v']
     unittest.main()

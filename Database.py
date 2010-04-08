@@ -10,6 +10,7 @@ Created on Apr 7, 2010
 class SQLowException(Exception):
     def __init__(self, value):
         self.value = value
+        
     def __str__(self):
         return repr(self.value)
 
@@ -52,8 +53,11 @@ class DatabaseManager:
             if len(self.databases) is 0:
                 raise SQLowException('Please add a connection before trying to get a connection')
             
-            if name:
-                return self.databases[name]
+            if name is not None:
+                if name in self.databases.keys():
+                    return self.databases[name]
+                else:
+                    raise SQLowException("%s is not added as a connection name" % name) 
             elif name is None and len(self.databases) == 1:
                 return self.databases[self.databases.keys()[0]]
             else:
@@ -88,9 +92,5 @@ class DatabaseManager:
     def __setattr__(self, attr, value):
         """ Delegate access to implementation """
         return setattr(self.__instance, attr, value)
-
-
-if __name__ == '__main__':
-    apa = DatabaseConnectionFactory("mysql://ASDF:password@dev.miniclip.com/Database")
         
         

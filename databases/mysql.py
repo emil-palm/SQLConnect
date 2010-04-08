@@ -22,13 +22,13 @@ class MySQL(object):
     
     connectionStringPattern = re.compile("(\w+)(\:\w+)?@(\w+)(\:\d+)?\/(\w+)")
 
-    def __init__(self,string):
+    def __init__(self, string):
         '''
         Constructor
         '''
         match = self.connectionStringPattern.match(string)
         if match:
-            (self.username,self.password,self.hostname,self.hostport,self.database) = match.groups()
+            (self.username, self.password, self.hostname, self.hostport, self.database) = match.groups()
             
             if self.password is not None:
                 self.password.lstrip(":")
@@ -42,9 +42,9 @@ class MySQL(object):
             raise ValueError("mysql://%s is not a valid mysql dsn. mysql://username[:password]@hostname[:port]/database" % string)
         
     def connect(self):
-        return db.connect (host = self.hostname,
-                           port = self.hostport,
-                           user = self.username,
-                           passwd = self.password,
-                           db = self.database)
+        return db.connect (host=self.hostname,
+                           port=self.hostport,
+                           user=self.username,
+                           passwd=self.password,
+                           db=self.database)
         

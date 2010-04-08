@@ -10,7 +10,7 @@ def validateMethod(method,object):
         item = getattr(object, method)
         if item is not None:
             if inspect.ismethod(item):
-                continue
+                return
             else:
                 raise AttributeError(method,' is not a method')
         else:
@@ -23,3 +23,11 @@ def validatePEP249Connection(connection):
 def validatePEP249Cursor(cursor):
     for method in ['description','rowcount','close','execute','executemany','fetchone','fetchmany','fetchall','arraysize','setinputsizes','setoutputsize']:
         validateMethod(method,cursor)
+        
+def unittest2():
+    import unittest
+    try:
+        unittest.skip
+    except AttributeError:
+        import unittest2 as ut2
+        unittest = ut2

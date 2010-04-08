@@ -3,10 +3,12 @@ Created on Apr 8, 2010
 
 @author: emil
 '''
+
 import unittest,sys
 import tests_databases
 
 if __name__ == "__main__":
+        
     loader = unittest.TestLoader()
     testSuit = unittest.TestSuite()
     sys.path.append("tests_databases")
