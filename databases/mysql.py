@@ -5,7 +5,7 @@ Created on Apr 7, 2010
 '''
 try:
     import MySQLdb as db
-except:
+except ImportError:
     pass
 
 import re
@@ -28,7 +28,6 @@ class MySQL(object):
         '''
         match = self.connectionStringPattern.match(string)
         if match:
-            print match.groups()
             (self.username,self.password,self.hostname,self.hostport,self.database) = match.groups()
             
             if self.password is not None:
@@ -40,7 +39,7 @@ class MySQL(object):
                 self.hostport = 3306
             
         else:
-            raise Exception("mysql://%s is not a valid mysql dsn. mysql://username[:password]@hostname[:port]/database" % string)
+            raise ValueError("mysql://%s is not a valid mysql dsn. mysql://username[:password]@hostname[:port]/database" % string)
         
     def connect(self):
         return db.connect (host = self.hostname,

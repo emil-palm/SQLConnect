@@ -6,6 +6,14 @@ Created on Apr 7, 2010
 import unittest
 from Database import DatabaseConnectionFactory
 
+def checkMysql():
+    try:
+        import MySQLdb as db
+        return True
+    except ImportError:
+        return False
+ 
+#@unittest.skipIf(checkMysql(), "Cannot find MySQL skipping connection testing")
 class Test(unittest.TestCase):
 
     def test_validDSNWithoutPort(self):
@@ -20,11 +28,8 @@ class Test(unittest.TestCase):
         
     def test_invalidDSN(self):
         """ Try setting up mysql object with a invalid dsn """
-        self.assertRaises(Exception,DatabaseConnectionFactory.DatabaseConnection("mysql://foo::bar@localhost:3306/database"))
-
-
+        self.assertRaises(ValueError,DatabaseConnectionFactory.DatabaseConnection,("mysql://foo::bar@localhost:3306/database"))
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
-    print "foobar"
