@@ -14,7 +14,7 @@ def checkMysql():
         return False
  
 #@unittest.skipIf(checkMysql(), "Cannot find MySQL skipping connection testing")
-class Test(unittest.TestCase):
+class Test_MySQL(unittest.TestCase):
 
     def test_validDSNWithoutPort(self):
         """ Try setting up mysql object with a valid DSN without port """
