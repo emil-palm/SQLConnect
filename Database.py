@@ -16,18 +16,21 @@ class SQLowException(Exception):
 
 class DatabaseConnectionFactory(object):
     
-    
     @staticmethod
-    def loadModule(schema,string):
+    def _loadModule(schema,string):
         if schema.lower() == "mysql":
-            return mysql.MySQL(string) 
+            return mysql.MySQL(string)
+        elif schema.lower() == "sqlite":
+            return sqlite.SQLite(string)
+        else:
+            raise SQLowException("%s is not a valid schema" % schema)
                 
     @staticmethod        
     def DatabaseConnection(string):
         schemaPattern = re.compile("^([^\:]+):\/\/(.*)$")
         match = schemaPattern.search(string)
         if match:
-            return DatabaseConnectionFactory.loadModule(match.group(1),match.group(2))
+            return DatabaseConnectionFactory._loadModule(match.group(1),match.group(2))
             
         
 class DatabaseManager:
@@ -39,7 +42,7 @@ class DatabaseManager:
         
         def addConnection(self,connectionString,name=None):
             if name is None:
-                name = randint()
+                name = randint(0,100)
                 
             self.databases[name] = connectionString
             
@@ -49,19 +52,18 @@ class DatabaseManager:
             if len(self.databases) is 0:
                 raise SQLowException('Please add a connection before trying to get a connection')
             
-            if name is None and len(self.databases) == 1:
-                return self.databases[self.databses.keys()[0]]
+            if name:
+                return self.databases[name]
+            elif name is None and len(self.databases) == 1:
+                return self.databases[self.databases.keys()[0]]
             else:
                 raise SQLowException('Please provide the name for the connection since you have more then one connectionstring')
             
-            if name:
-                return self.database[name]
-            
             raise SQLowException('This shouldnt happen')
-        
-        def getConnection(self,name=None):
-            sqlConnection = ""
 
+        def getConnection(self,name=None):
+            connectionString = self._getConnectionString(name)
+            return DatabaseConnectionFactory.DatabaseConnection(connectionString)
                 
             
              
@@ -73,12 +75,8 @@ class DatabaseManager:
         """ Create singleton instance """
         # Check whether we already have an instance
         if DatabaseManager.__instance is None:
-            
-            if connectionString is None:
-                raise SQLowException('Cannot instansiate SQLow.database without sqlConnection argument')
-            
             # Create and remember instance
-            DatabaseManager.__instance = DatabaseManager.__Databaseimpl(connectionString)
+            DatabaseManager.__instance = DatabaseManager.__Databaseimpl()
 
         # Store instance reference as the only member in the handle
         self.__dict__['_Singleton__instance'] = DatabaseManager.__instance
