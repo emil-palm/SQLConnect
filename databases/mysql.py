@@ -3,10 +3,7 @@ Created on Apr 7, 2010
 
 @author: emil
 '''
-try:
-    import MySQLdb as db
-except ImportError:
-    pass
+import MySQLdb as db
 
 import re
 
