@@ -24,6 +24,12 @@ class Foobar(BaseTable):
     
     def __init__(self):
         self.__conname__ = "test"
+        self.connection = self.getConnection().connect()
+        self.cursor = self.connection.cursor();
+        
+    def _setup(self):
+        self.cursor.execute("DROP TABLE IF EXISTS `test`")
+        self.cursor.execute("create table t1 (t1key INTEGER PRIMARY KEY,data TEXT,num double,timeEnter DATE);")
         
         
     def test(self):
@@ -31,8 +37,9 @@ class Foobar(BaseTable):
 
 
 if __name__ == '__main__':
-    DatabaseManager().addConnection("sqlite://:memory:","")
+    DatabaseManager().addConnection("sqlite://foobar.sqlite","test")
     foo = Foobar()
+    foo._setup()
     print foo.test()
     
         

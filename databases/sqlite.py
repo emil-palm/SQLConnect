@@ -24,20 +24,29 @@ class SQLite(object):
             
     def _validSqliteFile(self,file):
         dir = os.path.dirname(file)
-        if os.path.isdir(dir):
-            if os.access(dir, os.W_OK):
-                if os.path.isfile(file):
-                    if os.access(file,os.W_OK):
-                        return True 
+        if dir != "":
+            if os.path.isdir(dir):
+                if os.access(dir, os.W_OK):
+                    if os.path.isfile(file):
+                        if os.access(file,os.W_OK):
+                            return True 
+                        else:
+                            raise ValueError("%s is not writable" % file)
                     else:
-                        raise ValueError("%s is not writable" % file)
+                        """ We might not have the file but we can write a file so go ahead """
+                        return True
                 else:
-                    """ We might not have the file but we can write a file so go ahead """
-                    return True
+                    raise ValueError("%s is not writeable" % dir)
             else:
-                raise ValueError("%s is not writeable" % dir)
+                raise ValueError("%s does not exist" % dir)
         else:
-            raise ValueError("%s does not exist" % dir)
+            if os.path.isfile(file):
+                if os.access(file,os.W_OK):
+                    return True 
+                else:
+                    raise ValueError("%s is not writable" % file)
+            else:
+                return True
             
                 
 
