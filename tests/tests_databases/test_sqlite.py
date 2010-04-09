@@ -24,15 +24,15 @@ class Test_SQLite(unittest.TestCase):
         """ Try valid SQLite file DSN """ 
         
         database = DatabaseConnectionFactory.DatabaseConnection("sqlite://%s/SQLow.tmp" % tempfile.gettempdir())
-        self.assertNotEqual(database,None)        
+        self.assertNotEqual(database,None)
+
+    def test_ValidFileDSNOverwrite(self):
+        """ Try valid SQLite file DSN """ 
+        
+        database = DatabaseConnectionFactory.DatabaseConnection("sqlite://%s/SQLow.tmp" % tempfile.gettempdir())
+        self.assertNotEqual(database,None)    
     
     def test_InvalidFileDsn(self):
         """ Try invalid SQLite file DSN """
         arg = ("sqlite:///%i/%i/%i/%i" % (randint(0,100),randint(0,100),randint(0,100),randint(0,100)))
         self.assertRaises(ValueError,DatabaseConnectionFactory.DatabaseConnection,arg)
-        
-
-
-if __name__ == "__main__":
-    import sys;sys.argv = ['', '-v']
-    unittest.main()

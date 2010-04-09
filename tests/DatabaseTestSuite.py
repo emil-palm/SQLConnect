@@ -4,19 +4,8 @@ Created on Apr 8, 2010
 @author: emil
 '''
 import unittest2 as unittest
-import sys
-import tests_databases
 
 if __name__ == "__main__":
-        
     loader = unittest.TestLoader()
-    testSuit = unittest.TestSuite()
-    sys.path.append("tests_databases")
-    for testModule in tests_databases.__all__:
-        mod = __import__(testModule)
-        for suit in loader.loadTestsFromModule(mod):
-            for x in suit:
-                testSuit.addTest(x)
-                
-    unittest.TextTestRunner(verbosity=1).run(testSuit)
-    
+    test = loader.discover(".")
+    unittest.TextTestRunner(verbosity=2).run(test)

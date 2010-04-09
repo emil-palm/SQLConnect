@@ -9,7 +9,7 @@ from SQLConnect import DatabaseManager, SQLConnectException, DatabaseConnectionF
 
 class Test_DatabaseConnectionFactory(unittest.TestCase):
     def test_creatingMysql(self):
-        """ Try to retrive a MySQL Database object """
+        # Try to retrive a MySQL Database object
         database = DatabaseConnectionFactory.DatabaseConnection("mysql://root@localhost/mysql")
         self.assertNotEqual(database,None)
         
