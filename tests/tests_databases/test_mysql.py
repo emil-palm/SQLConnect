@@ -3,8 +3,8 @@ Created on Apr 7, 2010
 
 @author: emil
 '''
-import unittest
-from Database import DatabaseConnectionFactory
+import unittest2 as unittest
+from SQLConnect import DatabaseConnectionFactory
 
 def checkMysql():
     try:
@@ -49,10 +49,16 @@ class Test_MySQL(unittest.TestCase):
         try:
             import MySQLdb
         except ImportError:
-            self.success("YAY")
+            self.skip()
         
         """ Try connecting """
         database = DatabaseConnectionFactory.DatabaseConnection("mysql://root@localhost:3306/mysql")
-        self.assertNotEqual(database.connect(),None)
+        try:
+            conn = database.connect()
+            self.assertNotEqual(conn,None)
+        except MySQLdb.OperationalError:
+            self.skipTest("Validate your mysql install")
+        
+        
     
         

@@ -10,6 +10,7 @@ except ImportError as e:
     import sqlite2 as db
     
 import os
+import re
 
 
 class SQLite(object):
@@ -19,9 +20,18 @@ class SQLite(object):
     database = None
 
     def __init__(self,string):
-        if string == ":memory:" or self._validSqliteFile(string):
+        if self._validSqliteMemory(string) or self._validSqliteFile(string):
+        #if string == ":memory:" or self._validSqliteFile(string):
             self.database = string
             
+    def _validSqliteMemory(self,string):
+        if re.search("^:", string) is not None:
+            if string == ':memory:':
+                return True
+            else:
+                raise ValueError("%s is not valid memory connection" % string)
+               
+        
     def _validSqliteFile(self,file):
         dir = os.path.dirname(file)
         if dir != "":

@@ -3,8 +3,8 @@ Created on Apr 8, 2010
 
 @author: emil
 '''
-
-import unittest,sys
+import unittest2 as unittest
+import sys
 import tests_databases
 
 if __name__ == "__main__":
@@ -18,5 +18,5 @@ if __name__ == "__main__":
             for x in suit:
                 testSuit.addTest(x)
                 
-    unittest.TextTestRunner(verbosity=2).run(testSuit)
+    unittest.TextTestRunner(verbosity=1).run(testSuit)
     

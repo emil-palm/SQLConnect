@@ -3,14 +3,10 @@ Created on Apr 8, 2010
 
 @author: emil
 '''
-from utils import unittest2
-import unittest,tempfile
+import unittest2 as unittest
+import tempfile
 from random import randint
-from Database import DatabaseConnectionFactory
-
-unittest2()
-print unittest.skip
-
+from SQLConnect import DatabaseConnectionFactory
 
 class Test_SQLite(unittest.TestCase):
 

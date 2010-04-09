@@ -23,11 +23,3 @@ def validatePEP249Connection(connection):
 def validatePEP249Cursor(cursor):
     for method in ['description','rowcount','close','execute','executemany','fetchone','fetchmany','fetchall','arraysize','setinputsizes','setoutputsize']:
         validateMethod(method,cursor)
-        
-def unittest2():
-    import unittest
-    try:
-        unittest.skip
-    except AttributeError:
-        import unittest2 as ut2
-        unittest = ut2

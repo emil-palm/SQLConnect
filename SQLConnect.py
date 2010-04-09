@@ -7,7 +7,7 @@ Created on Apr 7, 2010
 
 @author: emil
 '''
-class SQLowException(Exception):
+class SQLConnectException(Exception):
     def __init__(self, value):
         self.value = value
         
@@ -24,7 +24,7 @@ class DatabaseConnectionFactory(object):
         elif schema.lower() == "sqlite":
             return sqlite.SQLite(string)
         else:
-            raise SQLowException("%s is not a valid schema" % schema)
+            raise SQLConnectException("%s is not a valid schema" % schema)
                 
     @staticmethod        
     def DatabaseConnection(string):
@@ -51,19 +51,19 @@ class DatabaseManager:
         
         def _getConnectionString(self,name=None):
             if len(self.databases) is 0:
-                raise SQLowException('Please add a connection before trying to get a connection')
+                raise SQLConnectException('Please add a connection before trying to get a connection')
             
             if name is not None:
                 if name in self.databases.keys():
                     return self.databases[name]
                 else:
-                    raise SQLowException("%s is not added as a connection name" % name) 
+                    raise SQLConnectException("%s is not added as a connection name" % name) 
             elif name is None and len(self.databases) == 1:
                 return self.databases[self.databases.keys()[0]]
             else:
-                raise SQLowException('Please provide the name for the connection since you have more then one connectionstring')
+                raise SQLConnectException('Please provide the name for the connection since you have more then one connectionstring')
             
-            raise SQLowException('This shouldnt happen')
+            raise SQLConnectException('This shouldnt happen')
 
         def getConnection(self,name=None):
             connectionString = self._getConnectionString(name)

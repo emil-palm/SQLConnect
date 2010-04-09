@@ -3,9 +3,9 @@ Created on Apr 8, 2010
 
 @author: emil
 '''
-import unittest
+import unittest2 as unittest
 from random import randint
-from Database import DatabaseManager, SQLowException, DatabaseConnectionFactory
+from SQLConnect import DatabaseManager, SQLConnectException, DatabaseConnectionFactory
 
 class Test_DatabaseConnectionFactory(unittest.TestCase):
     def test_creatingMysql(self):
@@ -20,7 +20,7 @@ class Test_DatabaseConnectionFactory(unittest.TestCase):
     
     def test_creatingFake(self):
         """ Try creating a non working object by using a invalid schema """
-        self.assertRaises(SQLowException,DatabaseConnectionFactory.DatabaseConnection,("random://randomInvalidString"))
+        self.assertRaises(SQLConnectException,DatabaseConnectionFactory.DatabaseConnection,("random://randomInvalidString"))
         
 
 class Test_DatabaseManager(unittest.TestCase):
@@ -55,8 +55,8 @@ class Test_DatabaseManager(unittest.TestCase):
         
     def test_getSQLConnectionWithoutAdding(self):
         """ Try retriving a database object before adding a object """
-        self.assertRaises(SQLowException,self.databaseManager.getConnection)
-        self.assertRaises(SQLowException,self.databaseManager.getConnection,("sqlite"))
+        self.assertRaises(SQLConnectException,self.databaseManager.getConnection)
+        self.assertRaises(SQLConnectException,self.databaseManager.getConnection,("sqlite"))
     
     def test_getAndConnect(self):
         """ Try adding a database and then retrive and connect """
@@ -67,7 +67,7 @@ class Test_DatabaseManager(unittest.TestCase):
     def test_getRandomKey(self):
         """ Try getting a non added connection """
         self.databaseManager.addConnection("sqlite://:memory:")
-        self.assertRaises(SQLowException,self.databaseManager.getConnection,("%i%i" % (randint(0,1000),randint(0,1000))))
+        self.assertRaises(SQLConnectException,self.databaseManager.getConnection,("%i%i" % (randint(0,1000),randint(0,1000))))
         
     def test_getConnectionStringWithoutName(self):
         """ Try adding and retreving a connection string without a name """
@@ -81,7 +81,7 @@ class Test_DatabaseManager(unittest.TestCase):
         
     def test_getConnectionStringWithoutAdding(self):
         """ Try retreving a connectionString without adding one prior """
-        self.assertRaises(SQLowException,self.databaseManager._getConnectionString)
+        self.assertRaises(SQLConnectException,self.databaseManager._getConnectionString)
                           
 if __name__ == "__main__":
     import sys;sys.argv = ['', '-v']

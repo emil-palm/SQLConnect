@@ -31,10 +31,13 @@ class MySQL(object):
             (self.username, self.password, self.hostname, self.hostport, self.database) = match.groups()
             
             if self.password is not None:
-                self.password.lstrip(":")
+                self.password = self.password.lstrip(':')
+            else:
+                self.password = ""
             
             if self.hostport is not None:
-                self.hostport.lstrip(":")
+                self.hostport = self.hostport.lstrip(':')
+                self.hostport = int(self.hostport)
             else:
                 self.hostport = 3306
             
