@@ -18,7 +18,7 @@ class SQLConnectException(Exception):
 class DatabaseConnectionFactory(object):
     
     @staticmethod
-    def _loadModule(schema,string):
+    def _loadModule(schema, string):
         if schema.lower() == "mysql":
             return mysql.MySQL(string)
         elif schema.lower() == "sqlite":
@@ -31,7 +31,7 @@ class DatabaseConnectionFactory(object):
         schemaPattern = re.compile("^([^\:]+):\/\/(.*)$")
         match = schemaPattern.search(string)
         if match:
-            return DatabaseConnectionFactory._loadModule(match.group(1),match.group(2))
+            return DatabaseConnectionFactory._loadModule(match.group(1), match.group(2))
             
         
 class DatabaseManager:
@@ -41,15 +41,15 @@ class DatabaseManager:
         
         databases = {}
         
-        def addConnection(self,connectionString,name=None):
+        def addConnection(self, connectionString, name=None):
             if name is None:
-                name = randint(0,100)
+                name = randint(0, 100)
                 
             self.databases[name] = connectionString
             
             return name
         
-        def _getConnectionString(self,name=None):
+        def _getConnectionString(self, name=None):
             if len(self.databases) is 0:
                 raise SQLConnectException('Please add a connection before trying to get a connection')
             
@@ -65,17 +65,63 @@ class DatabaseManager:
             
             raise SQLConnectException('This shouldnt happen')
 
-        def getConnection(self,name=None):
+        def getConnection(self, name=None):
             connectionString = self._getConnectionString(name)
             return DatabaseConnectionFactory.DatabaseConnection(connectionString)
+        
+        def execute(self, sql, name=None):
+            conn = self.getConnection(name).connect()
+            cur = conn.cursor()
+            try:
+
+                cur.execute(sql)
+                conn.commit()
+            finally:
+                cur.close()
+                conn.close()
+            return cur
+        
+        def fetchList(self, sql, name=None):
+            conn = self.getConnection(name).connect()
+            cur = conn.cursor()
+            cur.execute(sql)
+            rows = []
+            while (1):
+                row = cur.fetchone()
+                if row == None:
+                    break #pragma: no cover
+                rows.append(row)
                 
+            cur.close()
+            conn.close()
+            return rows
+        
+        def fetchDict(self, sql, name=None):
+            
+            conn = self.getConnection(name).connect()
+            cur = conn.cursor()
+            cur.execute(sql)
+            
+            rows = []
+            cols = [ d[0] for d in cur.description ]
+            
+            while (1):
+                row = cur.fetchone()
+                if row == None:
+                    break #pragma: no cover
+                rows.append(dict(zip(cols, row)))
+                
+            cur.close()
+            conn.close()
+            return rows
+            
             
              
 
     # storage for the instance reference
     __instance = None
 
-    def __init__(self,connectionString=None):
+    def __init__(self, connectionString=None):
         """ Create singleton instance """
         # Check whether we already have an instance
         if DatabaseManager.__instance is None:

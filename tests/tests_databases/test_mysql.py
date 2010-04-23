@@ -6,6 +6,14 @@ Created on Apr 7, 2010
 import unittest2 as unittest
 from ...SQLConnect import DatabaseConnectionFactory
 
+def checkMysql():
+    try:
+        import MySQLdb as db
+        return True
+    except ImportError:
+        return False
+ 
+#@unittest.skipIf(checkMysql(), "Cannot find MySQL skipping connection testing")
 class Test_MySQL(unittest.TestCase):
 
     def test_validDSNWithoutPort(self):
