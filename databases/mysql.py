@@ -17,7 +17,7 @@ class MySQL(object):
     password = None
     database = None
     
-    connectionStringPattern = re.compile("(\w+)(\:\w+)?@(\w+)(\:\d+)?\/(\w+)")
+    connectionStringPattern = re.compile("(\w+)(\:[^\@]+)?@(\w+)(\:\d+)?\/(\w+)")
 
     def __init__(self, string):
         '''
